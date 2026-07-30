@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "LaVRuq5UT9Q=",
+  "dgSpecHash": "F8CNI4QPiOk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.API\\TaskManagement.API.csproj",
+  "projectFilePath": "C:\\Users\\Muzammil Computers\\Desktop\\cohort-9-dotnet-14421-faizal\\backend\\TaskManagement.API\\TaskManagement.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\Muzammil Computers\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
+    "C:\\Users\\Muzammil Computers\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\12.1.1\\fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.10\\microsoft.aspnetcore.authentication.jwtbearer.10.0.10.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\10.0.10\\microsoft.aspnetcore.identity.entityframeworkcore.10.0.10.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",

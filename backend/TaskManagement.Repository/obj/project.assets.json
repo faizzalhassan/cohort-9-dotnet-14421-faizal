@@ -4108,11 +4108,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.Repository\\TaskManagement.Repository.csproj",
+      "projectUniqueName": "C:\\Users\\Muzammil Computers\\Desktop\\cohort-9-dotnet-14421-faizal\\backend\\TaskManagement.Repository\\TaskManagement.Repository.csproj",
       "projectName": "TaskManagement.Repository",
-      "projectPath": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.Repository\\TaskManagement.Repository.csproj",
+      "projectPath": "C:\\Users\\Muzammil Computers\\Desktop\\cohort-9-dotnet-14421-faizal\\backend\\TaskManagement.Repository\\TaskManagement.Repository.csproj",
       "packagesPath": "C:\\Users\\Muzammil Computers\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.Repository\\obj\\",
+      "outputPath": "C:\\Users\\Muzammil Computers\\Desktop\\cohort-9-dotnet-14421-faizal\\backend\\TaskManagement.Repository\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

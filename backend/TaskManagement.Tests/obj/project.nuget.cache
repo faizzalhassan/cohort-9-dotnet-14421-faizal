@@ -1,11 +1,9 @@
 {
   "version": 2,
-  "dgSpecHash": "IynXUVHXlgA=",
+  "dgSpecHash": "mgm1Tlds5vU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.Tests\\TaskManagement.Tests.csproj",
+  "projectFilePath": "C:\\Users\\Muzammil Computers\\Desktop\\cohort-9-dotnet-14421-faizal\\backend\\TaskManagement.Tests\\TaskManagement.Tests.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Muzammil Computers\\.nuget\\packages\\automapper\\16.2.0\\automapper.16.2.0.nupkg.sha512",
-    "C:\\Users\\Muzammil Computers\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
@@ -93,18 +91,5 @@
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\xunit.extensibility.execution\\2.9.3\\xunit.extensibility.execution.2.9.3.nupkg.sha512",
     "C:\\Users\\Muzammil Computers\\.nuget\\packages\\xunit.runner.visualstudio\\3.1.4\\xunit.runner.visualstudio.3.1.4.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1608",
-      "level": "Warning",
-      "message": "Detected package version outside of dependency constraint: AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1 requires AutoMapper (= 12.0.1) but version AutoMapper 16.2.0 was resolved.",
-      "projectPath": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.Tests\\TaskManagement.Tests.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\Muzammil Computers\\Desktop\\TaskManagementSystem\\backend\\TaskManagement.Tests\\TaskManagement.Tests.csproj",
-      "libraryId": "AutoMapper",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    }
-  ]
+  "logs": []
 }

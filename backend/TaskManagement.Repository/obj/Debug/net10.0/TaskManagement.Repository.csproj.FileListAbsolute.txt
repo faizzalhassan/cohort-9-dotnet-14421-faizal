@@ -1,0 +1,15 @@
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\bin\Debug\net10.0\TaskManagement.Repository.deps.json
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\bin\Debug\net10.0\TaskManagement.Repository.runtimeconfig.json
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\bin\Debug\net10.0\TaskManagement.Repository.dll
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\bin\Debug\net10.0\TaskManagement.Repository.pdb
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.csproj.AssemblyReference.cache
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.AssemblyInfoInputs.cache
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.AssemblyInfo.cs
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.csproj.CoreCompileInputs.cache
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.sourcelink.json
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.dll
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\refint\TaskManagement.Repository.dll
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.pdb
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\TaskManagement.Repository.genruntimeconfig.cache
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Repository\obj\Debug\net10.0\ref\TaskManagement.Repository.dll
