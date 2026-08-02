@@ -1,10 +1,12 @@
-import './App.css'
+import ToastConfig from "./components/Auth/AuthConfig";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
-    <div>
-      <h1>Task Management System</h1>
-    </div>
+    <>
+      <ToastConfig />
+      <AppRoutes />
+    </>
   );
 }
 

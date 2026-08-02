@@ -191,3 +191,4 @@ C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskMan
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\obj\Debug\net10.0\TaskManagement.Tests.pdb
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\obj\Debug\net10.0\TaskManagement.Tests.genruntimeconfig.cache
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\obj\Debug\net10.0\ref\TaskManagement.Tests.dll
+C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\BCrypt-Net-Next.dll
