@@ -69,7 +69,6 @@ C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskMan
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Microsoft.TestPlatform.Utilities.dll
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Microsoft.VisualStudio.TestPlatform.Common.dll
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Moq.dll
-C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Newtonsoft.Json.dll
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Serilog.dll
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Serilog.AspNetCore.dll
 C:\Users\Muzammil Computers\Desktop\cohort-9-dotnet-14421-faizal\backend\TaskManagement.Tests\bin\Debug\net10.0\Serilog.Extensions.Hosting.dll
