@@ -1,0 +1,7 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Application logs
+**/Logs/
+**/logs/
