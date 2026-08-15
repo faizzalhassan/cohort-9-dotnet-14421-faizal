@@ -1,14 +1,14 @@
-# Visual Studio / VS Code
-.vs/
-.vscode/
-
-# Build output
+# .NET
 **/bin/
 **/obj/
+.vs/
+
+# React
+node_modules/
+dist/
+
+# VS Code
+.vscode/
 
 # Logs
-**/logs/
-
-# User-specific files
-*.user
-*.suo
+*.log
