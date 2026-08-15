@@ -1,32 +1,14 @@
-# =========================
-# .NET
-# =========================
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# Build output
 **/bin/
 **/obj/
-.vs/
+
+# Logs
+**/logs/
 
 # User-specific files
 *.user
 *.suo
-
-# Logs
-Logs/
-*.log
-
-# =========================
-# React
-# =========================
-node_modules/
-dist/
-coverage/
-
-# Environment files
-.env
-.env.*
-
-# VS Code
-.vscode/
-
-# OS files
-.DS_Store
-Thumbs.db
