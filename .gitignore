@@ -1,0 +1,24 @@
+# .NET
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+
+# React / Node
+**/node_modules/
+**/dist/
+.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+**/Logs/
+
+# OS
+.DS_Store
+Thumbs.db
