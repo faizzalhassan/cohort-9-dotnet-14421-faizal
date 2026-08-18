@@ -1,41 +1,141 @@
-var builder = WebApplication.CreateBuilder(args);
+using Taskify.API.Middleware;
+using Taskify.Business.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Taskify.Repository.Context;
+using Taskify.Repository.Interfaces;
+using Taskify.Repository.Repositories;
+using Taskify.API.Services;
+using Taskify.Business.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Taskify.Repository.Entities;
+using Taskify.Business.Services;
+using FluentValidation;
+using Taskify.Business.Validators;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "Logs/taskify-.log",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30)
+    .CreateLogger();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Serilog
+    builder.Host.UseSerilog();
+
+    // Database
+    builder.Services.AddDbContext<TaskifyDbContext>(options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    // Repositories
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IUserSessionRepository, UserSessionRepository>();
+
+    // JWT Configuration
+    builder.Services.Configure<JwtSettings>(
+        builder.Configuration.GetSection("JwtSettings"));
+
+    // FluentValidation
+    builder.Services.AddValidatorsFromAssemblyContaining<
+        RegisterRequestValidator>();
+
+    // Authentication Services
+    builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+    builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+    builder.Services.AddScoped<IAuthService, AuthService>();
+
+    // JWT Authentication
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            var jwtSettings = builder.Configuration
+                .GetSection("JwtSettings")
+                .Get<JwtSettings>()
+                ?? throw new InvalidOperationException(
+                    "JWT settings are not configured.");
+
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+
+                ValidateLifetime = true,
+
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+    // Authorization
+    builder.Services.AddAuthorization();
+
+    // Controllers
+    builder.Services.AddControllers();
+    builder.Services.AddCors(options =>
+{
+    options.AddPolicy("TaskifyFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+    var app = builder.Build();
+
+    // Serilog HTTP request logging
+    app.UseSerilogRequestLogging();
+
+    // Global exception handling
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    // HTTPS
+    app.UseHttpsRedirection();
+
+    app.UseCors("TaskifyFrontend");
+
+    // JWT Authentication
+    app.UseAuthentication();
+
+    // Server-side session validation
+    app.UseMiddleware<SessionValidationMiddleware>();
+
+    // Authorization
+    app.UseAuthorization();
+
+    // Controllers
+    app.MapControllers();
+
+    Log.Information("Taskify API started successfully.");
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
+catch (Exception exception)
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    Log.Fatal(
+        exception,
+        "Taskify API terminated unexpectedly.");
+}
+finally
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    Log.CloseAndFlush();
 }
