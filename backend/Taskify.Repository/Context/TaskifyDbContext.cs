@@ -11,7 +11,7 @@ public class TaskifyDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
-
+    public DbSet<TaskItem> Tasks => Set<TaskItem>();
     public DbSet<UserSession> UserSessions => Set<UserSession>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

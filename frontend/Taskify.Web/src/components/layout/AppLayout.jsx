@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import Navbar from './Navbar';
 
 export default function AppLayout() {
   return (
@@ -8,10 +7,9 @@ export default function AppLayout() {
 
       <Sidebar />
 
-      <Navbar />
 
-      <main className="ml-64 pt-16">
-        <div className="p-6">
+      <main className="ml-60">
+        <div className="p-5">
           <Outlet />
         </div>
       </main>

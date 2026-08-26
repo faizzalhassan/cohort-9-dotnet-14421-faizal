@@ -14,6 +14,7 @@ using Taskify.Business.Validators;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -40,6 +41,7 @@ try
     // Repositories
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IUserSessionRepository, UserSessionRepository>();
+    builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
     // JWT Configuration
     builder.Services.Configure<JwtSettings>(
@@ -53,6 +55,14 @@ try
     builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
     builder.Services.AddScoped<IAuthService, AuthService>();
+
+    // User Management Services
+    builder.Services.AddScoped<
+        IUserManagementService,
+        UserManagementService>();
+
+    // Task Services
+    builder.Services.AddScoped<ITaskService, TaskService>();
 
     // JWT Authentication
     builder.Services
@@ -89,16 +99,18 @@ try
 
     // Controllers
     builder.Services.AddControllers();
+
+    // CORS
     builder.Services.AddCors(options =>
-{
-    options.AddPolicy("TaskifyFrontend", policy =>
     {
-        policy
-            .WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        options.AddPolicy("TaskifyFrontend", policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
     });
-});
 
     var app = builder.Build();
 
@@ -111,6 +123,7 @@ try
     // HTTPS
     app.UseHttpsRedirection();
 
+    // CORS
     app.UseCors("TaskifyFrontend");
 
     // JWT Authentication
@@ -128,6 +141,10 @@ try
     Log.Information("Taskify API started successfully.");
 
     app.Run();
+}
+catch (HostAbortedException)
+{
+    // EF Core design-time operations can intentionally abort the host.
 }
 catch (Exception exception)
 {

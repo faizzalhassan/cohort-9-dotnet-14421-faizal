@@ -2,9 +2,18 @@ import { Routes, Route } from 'react-router-dom';
 
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-
-import DashboardPage from './pages/dashboard/DashboardPage';
 import AdminDashboardPage from './pages/dashboard/AdminDashboardPage';
+
+import TasksPage from './pages/tasks/TasksPage';
+import AssignedTasksPage from './pages/tasks/AssignedTasksPage';
+import PendingTasksPage from './pages/tasks/PendingTasksPage';
+import InProgressTasksPage from './pages/tasks/InProgressTasksPage';
+import CompletedTasksPage from './pages/tasks/CompletedTasksPage';
+import OverdueTasksPage from './pages/tasks/OverdueTasksPage';
+import CancelledTasksPage from './pages/tasks/CancelledTasksPage';
+
+import AdminTasksPage from './pages/admin/AdminTasksPage';
+import UsersPage from './pages/admin/Users';
 
 import AppLayout from './components/layout/AppLayout';
 
@@ -31,20 +40,63 @@ export default function App() {
 
         <Route element={<AppLayout />}>
 
+          {/* Task Routes - User */}
           <Route
-            path="/dashboard"
-            element={<DashboardPage />}
+            path="/tasks"
+            element={<TasksPage />}
           />
 
-          {/* Admin Only */}
+          <Route
+            path="/tasks/assigned"
+            element={<AssignedTasksPage />}
+          />
+
+          <Route
+            path="/tasks/pending"
+            element={<PendingTasksPage />}
+          />
+
+          <Route
+            path="/tasks/in-progress"
+            element={<InProgressTasksPage />}
+          />
+
+          <Route
+            path="/tasks/completed"
+            element={<CompletedTasksPage />}
+          />
+
+          <Route
+            path="/tasks/overdue"
+            element={<OverdueTasksPage />}
+          />
+
+          <Route
+            path="/tasks/cancelled"
+            element={<CancelledTasksPage />}
+          />
+
+          {/* Admin Only Routes */}
           <Route
             element={
               <RoleRoute allowedRoles={['Admin']} />
             }
           >
+            {/* Admin Dashboard */}
             <Route
               path="/admin"
               element={<AdminDashboardPage />}
+            />
+
+            {/* Admin Tasks */}
+            <Route
+              path="/admin/tasks"
+              element={<AdminTasksPage />}
+            />
+            
+            <Route
+              path="/admin/users"
+              element={<UsersPage />}
             />
           </Route>
 

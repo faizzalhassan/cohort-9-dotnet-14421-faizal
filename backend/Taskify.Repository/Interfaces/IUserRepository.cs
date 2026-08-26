@@ -13,4 +13,9 @@ public interface IUserRepository
     Task<User> AddAsync(User user);
 
     Task UpdateAsync(User user);
+
+    // Admin user management
+    Task<IReadOnlyList<User>> GetAllActiveUsersAsync();
+
+    Task<int> GetTaskCountAsync(int userId);
 }
