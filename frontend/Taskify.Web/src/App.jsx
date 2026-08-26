@@ -15,6 +15,9 @@ import CancelledTasksPage from './pages/tasks/CancelledTasksPage';
 import AdminTasksPage from './pages/admin/AdminTasksPage';
 import UsersPage from './pages/admin/Users';
 
+import UserProfile from './pages/profile/UserProfile';
+import AdminProfile from './pages/profile/AdminProfile';
+
 import AppLayout from './components/layout/AppLayout';
 
 import ProtectedRoute from './guards/ProtectedRoute';
@@ -24,7 +27,10 @@ export default function App() {
   return (
     <Routes>
 
-      {/* Public Routes */}
+      {/* ============================================================
+          Public Routes
+      ============================================================ */}
+
       <Route
         path="/login"
         element={<LoginPage />}
@@ -35,12 +41,18 @@ export default function App() {
         element={<RegisterPage />}
       />
 
-      {/* Protected Routes */}
+      {/* ============================================================
+          Protected Routes
+      ============================================================ */}
+
       <Route element={<ProtectedRoute />}>
 
         <Route element={<AppLayout />}>
 
-          {/* Task Routes - User */}
+          {/* ========================================================
+              User Routes
+          ======================================================== */}
+
           <Route
             path="/tasks"
             element={<TasksPage />}
@@ -76,12 +88,22 @@ export default function App() {
             element={<CancelledTasksPage />}
           />
 
-          {/* Admin Only Routes */}
+          {/* User Profile */}
+          <Route
+            path="/profile"
+            element={<UserProfile />}
+          />
+
+          {/* ========================================================
+              Admin Only Routes
+          ======================================================== */}
+
           <Route
             element={
               <RoleRoute allowedRoles={['Admin']} />
             }
           >
+
             {/* Admin Dashboard */}
             <Route
               path="/admin"
@@ -93,18 +115,29 @@ export default function App() {
               path="/admin/tasks"
               element={<AdminTasksPage />}
             />
-            
+
+            {/* Admin Users */}
             <Route
               path="/admin/users"
               element={<UsersPage />}
             />
+
+            {/* Admin Profile */}
+            <Route
+              path="/admin/profile"
+              element={<AdminProfile />}
+            />
+
           </Route>
 
         </Route>
 
       </Route>
 
-      {/* Fallback */}
+      {/* ============================================================
+          Fallback
+      ============================================================ */}
+
       <Route
         path="*"
         element={<LoginPage />}

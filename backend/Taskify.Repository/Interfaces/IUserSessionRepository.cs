@@ -10,5 +10,7 @@ public interface IUserSessionRepository
 
     Task RevokeAsync(UserSession session);
 
+    Task RevokeAllByUserIdAsync(int userId);
+
     Task UpdateAsync(UserSession session);
 }

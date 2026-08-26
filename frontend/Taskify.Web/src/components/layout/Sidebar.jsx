@@ -79,6 +79,17 @@ const specialNavigation = [
   },
 ];
 
+const accountNavigation = [
+  {
+    label: 'Profile',
+    path: '/profile',
+    icon: 'user-circle',
+    bg: 'bg-slate-50',
+    color: 'text-slate-600',
+    exact: true,
+  },
+];
+
 /* ─── Admin Navigation ──────────────────────────────────────────────────── */
 
 const adminNavigation = [
@@ -104,6 +115,17 @@ const adminNavigation = [
     icon: 'users-group',
     bg: 'bg-cyan-50',
     color: 'text-cyan-600',
+    exact: true,
+  },
+];
+
+const adminAccountNavigation = [
+  {
+    label: 'Profile',
+    path: '/admin/profile',
+    icon: 'user-circle',
+    bg: 'bg-slate-50',
+    color: 'text-slate-600',
     exact: true,
   },
 ];
@@ -229,6 +251,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
+
         {/* ── Brand header ─────────────────────────────────────────────── */}
 
         <div
@@ -285,6 +308,8 @@ export default function Sidebar({ isOpen = true, onClose }) {
             /* ── Admin Navigation ────────────────────────────────────── */
 
             <div>
+
+              {/* Administration */}
               <div className="mb-2 flex items-center gap-2 px-2">
                 <span className="h-1 w-1 rounded-full bg-violet-500" />
 
@@ -302,6 +327,30 @@ export default function Sidebar({ isOpen = true, onClose }) {
                   />
                 ))}
               </nav>
+
+              {/* Account */}
+              <div className="mt-6">
+
+                <div className="mb-2 flex items-center gap-2 px-2">
+                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+
+                  <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                    Account
+                  </span>
+                </div>
+
+                <nav className="space-y-0.5">
+                  {adminAccountNavigation.map((item) => (
+                    <SidebarItem
+                      key={item.path}
+                      item={item}
+                      onClose={onClose}
+                    />
+                  ))}
+                </nav>
+
+              </div>
+
             </div>
 
           ) : (
@@ -309,6 +358,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
             /* ── User Navigation ─────────────────────────────────────── */
 
             <>
+
               {/* Section label - Views */}
               <div className="mb-2 flex items-center gap-2 px-2">
                 <span className="h-1 w-1 rounded-full bg-indigo-500" />
@@ -331,6 +381,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
 
               {/* Section label - Status */}
               <div className="mt-6">
+
                 <div className="mb-2 flex items-center gap-2 px-2">
                   <span className="h-1 w-1 rounded-full bg-slate-300" />
 
@@ -349,10 +400,12 @@ export default function Sidebar({ isOpen = true, onClose }) {
                     />
                   ))}
                 </nav>
+
               </div>
 
               {/* Section label - Special */}
               <div className="mt-6">
+
                 <div className="mb-2 flex items-center gap-2 px-2">
                   <span className="h-1 w-1 rounded-full bg-red-500" />
 
@@ -371,14 +424,41 @@ export default function Sidebar({ isOpen = true, onClose }) {
                     />
                   ))}
                 </nav>
+
               </div>
+
+              {/* Section label - Account */}
+              <div className="mt-6">
+
+                <div className="mb-2 flex items-center gap-2 px-2">
+                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+
+                  <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                    Account
+                  </span>
+                </div>
+
+                <nav className="space-y-0.5">
+                  {accountNavigation.map((item) => (
+                    <SidebarItem
+                      key={item.path}
+                      item={item}
+                      onClose={onClose}
+                    />
+                  ))}
+                </nav>
+
+              </div>
+
             </>
           )}
+
         </div>
 
         {/* ── User Profile & Logout Footer ────────────────────────────── */}
 
         <div className="shrink-0 border-t border-slate-100 p-3">
+
           <div className="flex w-full items-center gap-3 rounded-xl">
 
             {/* Avatar */}
@@ -388,6 +468,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
 
             {/* User info */}
             <div className="flex min-w-0 flex-1 flex-col items-start">
+
               <span className="truncate text-sm font-medium text-slate-900">
                 {getFullName()}
               </span>
@@ -395,6 +476,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
               <span className="mt-0.5 whitespace-nowrap text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 {getRole()}
               </span>
+
             </div>
 
             {/* Logout */}
@@ -408,8 +490,11 @@ export default function Sidebar({ isOpen = true, onClose }) {
             >
               <TIcon name="logout" size={18} />
             </button>
+
           </div>
+
         </div>
+
       </aside>
     </>
   );

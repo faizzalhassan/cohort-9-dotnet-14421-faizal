@@ -42,4 +42,28 @@ public class UserSessionRepository : IUserSessionRepository
         _context.UserSessions.Update(session);
         await _context.SaveChangesAsync();
     }
+
+    public async Task RevokeAllByUserIdAsync(int userId)
+{
+    var sessions = await _context.UserSessions
+        .Where(session =>
+            session.UserId == userId &&
+            !session.IsRevoked)
+        .ToListAsync();
+
+    if (sessions.Count == 0)
+    {
+        return;
+    }
+
+    var revokedAt = DateTime.UtcNow;
+
+    foreach (var session in sessions)
+    {
+        session.IsRevoked = true;
+        session.RevokedAt = revokedAt;
+    }
+
+    await _context.SaveChangesAsync();
+}
 }
