@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Taskify.API/Taskify.API.csproj" />
+  <Project Path="Taskify.Business/Taskify.Business.csproj" />
+  <Project Path="Taskify.Repository/Taskify.Repository.csproj" />
+  <Project Path="Taskify.Tests/Taskify.Tests.csproj" />
+</Solution>
