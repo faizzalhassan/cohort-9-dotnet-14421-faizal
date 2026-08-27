@@ -1,0 +1,19 @@
+﻿C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Controllers\AuthControllerTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Controllers\DashboardControllerTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Controllers\ProfileControllerTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Controllers\TasksControllerTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Controllers\UserControllerTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Repositories\TaskRepositoryTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Repositories\UserRepositoryTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Services\AuthServiceTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Services\ProfileServiceTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Services\TaskServiceTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Services\UserManagementServiceTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\UnitTest1.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Validators\LoginValidatorTests.cs
+C:\Faizzalz\Internship\10Pearls Shine Intern\cohort-9-dotnet-14421-faizal\backend\Taskify.Tests\Validators\RegisterValidatorTests.cs
+C:\Users\MY PC\.nuget\packages\microsoft.net.test.sdk\17.14.1\build\net8.0\Microsoft.NET.Test.Sdk.Program.cs
+C:\Users\MY PC\.nuget\packages\microsoft.testplatform.testhost\17.14.1\build\net8.0\x64\testhost.exe
+C:\Users\MY PC\.nuget\packages\microsoft.testplatform.testhost\17.14.1\build\net8.0\x64\testhost.dll
+C:\Users\MY PC\.nuget\packages\xunit.runner.visualstudio\3.1.4\build\net8.0\xunit.abstractions.dll
+C:\Users\MY PC\.nuget\packages\xunit.runner.visualstudio\3.1.4\build\net8.0\xunit.runner.visualstudio.testadapter.dll
