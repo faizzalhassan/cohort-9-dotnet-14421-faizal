@@ -5,16 +5,13 @@ Taskify is a full-stack task management application built with ASP.NET Core Web 
 ## Features
 
 ### Authentication
-
 - User registration and login
 - JWT-based authentication
 - Role-based authorization
 - Secure password handling
 
 ### User Task Management
-
 - Create, view, update, and delete personal tasks
-- View and update the status of assigned tasks
 - Update task status
 - Task categories and priorities
 - Due date management
@@ -23,7 +20,6 @@ Taskify is a full-stack task management application built with ASP.NET Core Web 
 - Status-based task views
 
 ### Admin Management
-
 - Admin dashboard with task and user statistics
 - View and manage users
 - Activate and deactivate user accounts
@@ -32,7 +28,6 @@ Taskify is a full-stack task management application built with ASP.NET Core Web 
 - Assign tasks to users
 
 ### Profile Management
-
 - View profile information
 - Update full name
 - Change password
@@ -42,25 +37,24 @@ Taskify is a full-stack task management application built with ASP.NET Core Web 
 ## Technology Stack
 
 ### Backend
-
 - ASP.NET Core Web API
 - .NET 10
 - Entity Framework Core
 - SQL Server
 - JWT Authentication
+- FluentValidation
 - Serilog
 
 ### Frontend
-
 - React
 - Vite
 - React Router
 - Axios
 - Tailwind CSS
 
-### Testing and Code Quality
-
+### Testing & Code Quality
 - xUnit
+- FluentValidation.TestHelper
 - SonarQube
 
 ## Project Architecture
@@ -136,7 +130,7 @@ The profile page allows users to manage their account information.
 
 ![Admin Dashboard](docs/screenshots/admin-dashboard-page.png)
 
-The admin dashboard provides an overview of the system through key statistics and task and user information.
+The admin dashboard provides an overview of the system through key statistics and task/user information.
 
 ### Admin Task Management
 
@@ -160,3 +154,49 @@ cd Taskify.API
 dotnet restore
 dotnet ef database update
 dotnet run
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Update the frontend API configuration if your backend is running on a different URL.
+
+## Testing
+
+The backend contains automated tests covering application services and validation logic.
+
+Run the tests using:
+
+```bash
+dotnet test
+```
+
+## Code Quality
+
+SonarQube was used to analyze the project for code quality, maintainability, and potential issues.
+
+## Project Structure
+
+```text
+Taskify/
+├── Taskify.API/
+├── Taskify.Business/
+├── Taskify.Repository/
+├── Taskify.Tests/
+├── frontend/
+├── docs/
+│   └── screenshots/
+└── README.md
+```
+
+## Author
+
+**Faizal Hassan**
+
+BS Computer Science  
+.NET Full Stack Developer
