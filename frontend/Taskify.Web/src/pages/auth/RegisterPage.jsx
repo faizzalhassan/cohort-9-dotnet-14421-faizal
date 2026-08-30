@@ -201,10 +201,6 @@ export default function RegisterPage() {
 
   if (authLoading) return null;
 
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
   /*
    * Confirm password feedback while typing.
    */
@@ -271,12 +267,7 @@ export default function RegisterPage() {
       setSuccessMessage('Registration successful. Redirecting...');
 
       setTimeout(() => {
-        const role = response.data?.user?.role;
-
-        navigate(
-          role === 'Admin' ? '/admin' : '/dashboard',
-          { replace: true }
-        );
+        navigate('/login',{ replace: true });
       }, 500);
     } catch (error) {
       const response = error?.response;
