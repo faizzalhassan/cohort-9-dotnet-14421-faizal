@@ -1,24 +1,51 @@
-# .NET
+# =========================
+# .NET / Visual Studio
+# =========================
 **/bin/
 **/obj/
 .vs/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
 
-# React / Node
+# Test results / coverage
+TestResults/
+*.trx
+coverage/
+*.coverage
+*.coveragexml
+
+# =========================
+# React / Node / Vite
+# =========================
 **/node_modules/
 **/dist/
 .vite/
+*.tsbuildinfo
 
-# Environment files
+# =========================
+# Environment / Secrets
+# =========================
 .env
 .env.*
 !.env.example
 
+# =========================
 # Logs
+# =========================
 *.log
 **/Logs/
 
+# =========================
+# SonarQube
+# =========================
+.sonarqube/
+.scannerwork/
+
+# =========================
 # OS
+# =========================
 .DS_Store
 Thumbs.db
+Desktop.ini
