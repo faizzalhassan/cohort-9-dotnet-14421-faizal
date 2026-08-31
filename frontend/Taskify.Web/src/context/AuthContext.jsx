@@ -6,6 +6,10 @@ import {
 } from 'react';
 
 import authService from '../services/authService';
+import {
+  startSignalRConnection,
+  stopSignalRConnection,
+} from '../services/signalRService';
 
 const AuthContext = createContext(null);
 
@@ -17,6 +21,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const isAuthenticated = !!user;
+
+  /* ─────────────────────────────────────────────────────────
+     Initialize Authentication
+  ───────────────────────────────────────────────────────── */
 
   useEffect(() => {
     const initializeAuthentication = async () => {
@@ -62,6 +70,48 @@ export function AuthProvider({ children }) {
     initializeAuthentication();
   }, []);
 
+/* ─────────────────────────────────────────────────────────
+   SignalR Connection
+   ───────────────────────────────────────────────────────── */
+
+useEffect(() => {
+  if (!user || loading) {
+    return;
+  }
+
+  let cancelled = false;
+
+  const connectSignalR = async () => {
+    try {
+      await startSignalRConnection();
+
+      if (cancelled) {
+        await stopSignalRConnection();
+      }
+    } catch (error) {
+      if (!cancelled) {
+        console.error(
+          'Failed to establish SignalR connection:',
+          error
+        );
+      }
+    }
+  };
+
+  connectSignalR();
+
+  return () => {
+    cancelled = true;
+
+    stopSignalRConnection();
+  };
+}, [user, loading]);
+
+
+  /* ─────────────────────────────────────────────────────────
+     Login
+  ───────────────────────────────────────────────────────── */
+
   const login = async (credentials) => {
     const response =
       await authService.login(credentials);
@@ -72,6 +122,10 @@ export function AuthProvider({ children }) {
 
     return response;
   };
+
+  /* ─────────────────────────────────────────────────────────
+     Register
+  ───────────────────────────────────────────────────────── */
 
   const register = async (registerData) => {
     const response =
@@ -94,8 +148,15 @@ export function AuthProvider({ children }) {
     return response;
   };
 
+  /* ─────────────────────────────────────────────────────────
+     Logout
+  ───────────────────────────────────────────────────────── */
+
   const logout = async () => {
     await authService.logout();
+
+    await stopSignalRConnection();
+
     setUser(null);
   };
 
