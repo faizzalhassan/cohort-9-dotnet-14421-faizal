@@ -45,4 +45,22 @@ public class UserRepository : IUserRepository
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IReadOnlyList<User>> GetAllActiveUsersAsync()
+{
+    return await _context.Users
+        .Where(user => !user.IsDeleted)
+        .OrderBy(user => user.FirstName)
+        .ThenBy(user => user.LastName)
+        .ToListAsync();
+}
+
+public async Task<int> GetTaskCountAsync(int userId)
+{
+    return await _context.Tasks
+        .CountAsync(task =>
+            !task.IsDeleted &&
+            (task.CreatedByUserId == userId ||
+             task.AssignedToUserId == userId));
+}
 }

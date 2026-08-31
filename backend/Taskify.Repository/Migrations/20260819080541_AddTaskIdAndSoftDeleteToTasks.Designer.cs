@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Taskify.Repository.Context;
 
@@ -11,9 +12,11 @@ using Taskify.Repository.Context;
 namespace Taskify.Repository.Migrations
 {
     [DbContext(typeof(TaskifyDbContext))]
-    partial class TaskifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819080541_AddTaskIdAndSoftDeleteToTasks")]
+    partial class AddTaskIdAndSoftDeleteToTasks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +65,11 @@ namespace Taskify.Repository.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("TaskId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -81,6 +89,9 @@ namespace Taskify.Repository.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("Status");
+
+                    b.HasIndex("TaskId")
+                        .IsUnique();
 
                     b.ToTable("Tasks", (string)null);
                 });
@@ -110,9 +121,6 @@ namespace Taskify.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("datetime2");

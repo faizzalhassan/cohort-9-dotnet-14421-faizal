@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Taskify.Repository.Context;
 
@@ -11,9 +12,11 @@ using Taskify.Repository.Context;
 namespace Taskify.Repository.Migrations
 {
     [DbContext(typeof(TaskifyDbContext))]
-    partial class TaskifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260818151054_TaskItemMigration")]
+    partial class TaskItemMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,11 +54,6 @@ namespace Taskify.Repository.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
@@ -77,8 +75,6 @@ namespace Taskify.Repository.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("DueDate");
-
-                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("Status");
 
@@ -110,9 +106,6 @@ namespace Taskify.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("datetime2");
