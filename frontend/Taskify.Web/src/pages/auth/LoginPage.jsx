@@ -307,16 +307,6 @@ export default function LoginPage() {
             </button>
           </Field>
 
-          {/* Forgot password */}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              className="text-[12.5px] font-medium text-indigo-600 transition-colors hover:text-indigo-700"
-            >
-              Forgot password?
-            </button>
-          </div>
-
           {/* Submit */}
           <button
             type="submit"
