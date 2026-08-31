@@ -13,6 +13,8 @@ namespace Taskify.API.Controllers;
 [Authorize]
 public class TasksController : ControllerBase
 {
+    private const string AdminDashboardGroup = "Admins";
+
     private readonly ITaskService _taskService;
     private readonly IHubContext<TaskHub> _hubContext;
 
@@ -177,6 +179,8 @@ public class TasksController : ControllerBase
             userId,
             userRole);
 
+        await NotifyAdminDashboardAsync();
+
         return StatusCode(
             StatusCodes.Status201Created,
             new
@@ -201,6 +205,8 @@ public class TasksController : ControllerBase
             userId,
             userRole);
 
+        await NotifyAdminDashboardAsync();
+
         return Ok(new
         {
             success = true,
@@ -223,6 +229,8 @@ public class TasksController : ControllerBase
             userId,
             userRole);
 
+        await NotifyAdminDashboardAsync();
+
         return Ok(new
         {
             success = true,
@@ -241,6 +249,8 @@ public class TasksController : ControllerBase
             id,
             userId,
             userRole);
+
+        await NotifyAdminDashboardAsync();
 
         return Ok(new
         {
@@ -357,6 +367,9 @@ public class TasksController : ControllerBase
                 .SendAsync("TaskAssigned", task);
         }
 
+        // Notify connected admins that dashboard data changed.
+        await NotifyAdminDashboardAsync();
+
         return StatusCode(
             StatusCodes.Status201Created,
             new
@@ -383,6 +396,8 @@ public class TasksController : ControllerBase
                 adminUserId,
                 adminRole);
 
+        await NotifyAdminDashboardAsync();
+
         return Ok(new
         {
             success = true,
@@ -407,6 +422,8 @@ public class TasksController : ControllerBase
                 adminUserId,
                 adminRole);
 
+        await NotifyAdminDashboardAsync();
+
         return Ok(new
         {
             success = true,
@@ -430,6 +447,8 @@ public class TasksController : ControllerBase
                 request,
                 adminUserId,
                 adminRole);
+
+        await NotifyAdminDashboardAsync();
 
         return Ok(new
         {
@@ -468,6 +487,8 @@ public class TasksController : ControllerBase
                 .SendAsync("TaskAssigned", task);
         }
 
+        await NotifyAdminDashboardAsync();
+
         return Ok(new
         {
             success = true,
@@ -487,6 +508,8 @@ public class TasksController : ControllerBase
             id,
             adminUserId,
             adminRole);
+
+        await NotifyAdminDashboardAsync();
 
         return Ok(new
         {
@@ -521,6 +544,18 @@ public class TasksController : ControllerBase
             success = true,
             data = users
         });
+    }
+
+    // ============================================================
+    // SIGNALR
+    // ============================================================
+
+    private async Task NotifyAdminDashboardAsync()
+    {
+        await _hubContext
+            .Clients
+            .Group(AdminDashboardGroup)
+            .SendAsync("DashboardUpdated");
     }
 
     // ============================================================

@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import taskService from '../../services/taskService';
+import { startSignalRConnection } from '../../services/signalRService';
+
+// ─── Icon helper ────────────────────────────────────────────────────────────
 
 function TIcon({ name, size = 18, className = '' }) {
   return (
@@ -12,14 +15,19 @@ function TIcon({ name, size = 18, className = '' }) {
   );
 }
 
+// ─── Date utilities ──────────────────────────────────────────────────────────
+
 function getDateKey(date) {
   if (!date) return null;
+
   if (typeof date === 'string') {
     const part = date.split('T')[0];
     if (/^\d{4}-\d{2}-\d{2}$/.test(part)) return part;
   }
+
   const value = new Date(date);
   if (Number.isNaN(value.getTime())) return null;
+
   return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
 }
 
@@ -35,56 +43,64 @@ function isTaskOverdue(task) {
   return due ? due < getTodayKey() : false;
 }
 
+// ─── Formatting helpers ──────────────────────────────────────────────────────
+
 function getPriorityName(priority) {
   if (typeof priority === 'number') {
-    return ({ 1: 'Low', 2: 'Medium', 3: 'High', 4: 'Urgent' }[priority] || 'Medium');
+    return { 1: 'Low', 2: 'Medium', 3: 'High', 4: 'Urgent' }[priority] || 'Medium';
   }
   return priority || 'Medium';
 }
 
 function getStatusBadgeColor(status) {
-  return ({
-    Pending: 'bg-amber-100 text-amber-700 border border-amber-200',
-    InProgress: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
-    Completed: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-    Cancelled: 'bg-slate-100 text-slate-500 border border-slate-200',
-  }[status] || 'bg-slate-100 text-slate-500 border border-slate-200');
+  return (
+    {
+      Pending:    'bg-amber-100 text-amber-700 border border-amber-200',
+      InProgress: 'bg-indigo-100 text-indigo-700 border border-indigo-200',
+      Completed:  'bg-emerald-100 text-emerald-700 border border-emerald-200',
+      Cancelled:  'bg-slate-100 text-slate-500 border border-slate-200',
+    }[status] || 'bg-slate-100 text-slate-500 border border-slate-200'
+  );
 }
 
 function getPriorityBadgeColor(priority) {
-  return ({
-    Low: 'bg-blue-50 text-blue-600 border border-blue-200',
-    Medium: 'bg-amber-50 text-amber-600 border border-amber-200',
-    High: 'bg-orange-50 text-orange-600 border border-orange-200',
-    Urgent: 'bg-red-50 text-red-600 border border-red-200',
-  }[priority] || 'bg-amber-50 text-amber-600 border border-amber-200');
+  return (
+    {
+      Low:    'bg-blue-50 text-blue-600 border border-blue-200',
+      Medium: 'bg-amber-50 text-amber-600 border border-amber-200',
+      High:   'bg-orange-50 text-orange-600 border border-orange-200',
+      Urgent: 'bg-red-50 text-red-600 border border-red-200',
+    }[priority] || 'bg-amber-50 text-amber-600 border border-amber-200'
+  );
 }
 
 function getStatusDot(status) {
-  return ({
-    Pending: 'bg-amber-400',
-    InProgress: 'bg-indigo-500',
-    Completed: 'bg-emerald-500',
-    Cancelled: 'bg-slate-400',
-  }[status] || 'bg-slate-400');
+  return (
+    {
+      Pending:    'bg-amber-400',
+      InProgress: 'bg-indigo-500',
+      Completed:  'bg-emerald-500',
+      Cancelled:  'bg-slate-400',
+    }[status] || 'bg-slate-400'
+  );
 }
 
 function getCategoryIcon(category) {
-  return ({
-    Work: 'briefcase',
-    Frontend: 'code',
-    Backend: 'server',
-    DevOps: 'settings',
-    Travel: 'plane',
-    Personal: 'user',
-    Design: 'palette',
-    Finance: 'currency-dollar',
-  }[category] || 'tag');
+  return (
+    {
+      Work:     'briefcase',
+      Frontend: 'code',
+      Backend:  'server',
+      DevOps:   'settings',
+      Travel:   'plane',
+      Personal: 'user',
+      Design:   'palette',
+      Finance:  'currency-dollar',
+    }[category] || 'tag'
+  );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Calendar                                                                   */
-/* -------------------------------------------------------------------------- */
+// ─── Calendar card ───────────────────────────────────────────────────────────
 
 function CalendarCard() {
   const [now, setNow] = useState(new Date());
@@ -94,14 +110,15 @@ function CalendarCard() {
     return () => clearInterval(timer);
   }, []);
 
-  const day = now.getDate();
-  const year = now.getFullYear();
-  const month = now.toLocaleDateString('en-US', { month: 'long' });
-  const weekday = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const day       = now.getDate();
+  const year      = now.getFullYear();
+  const month     = now.toLocaleDateString('en-US', { month: 'long' });
+  const weekday   = now.toLocaleDateString('en-US', { weekday: 'long' });
   const monthShort = now.toLocaleDateString('en-US', { month: 'short' });
 
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysInMonth     = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
   const calCells = [];
   for (let i = 0; i < firstDayOfMonth; i++) calCells.push(null);
   for (let i = 1; i <= daysInMonth; i++) calCells.push(i);
@@ -135,8 +152,10 @@ function CalendarCard() {
             {monthShort} {year}
           </p>
           <div className="grid grid-cols-7 gap-0.5 text-center">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-              <span key={i} className="grid h-6 w-6 place-items-center text-[8.5px] font-bold text-white/40">{d}</span>
+            {['S','M','T','W','T','F','S'].map((d, i) => (
+              <span key={i} className="grid h-6 w-6 place-items-center text-[8.5px] font-bold text-white/40">
+                {d}
+              </span>
             ))}
             {calCells.map((d, i) => (
               <span
@@ -159,9 +178,7 @@ function CalendarCard() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* KPI Cards                                                                  */
-/* -------------------------------------------------------------------------- */
+// ─── KPI cards ───────────────────────────────────────────────────────────────
 
 function KpiCard({ title, value, subtitle, icon, iconBg, iconColor, accent, cardBg = 'from-white to-slate-50' }) {
   return (
@@ -175,7 +192,7 @@ function KpiCard({ title, value, subtitle, icon, iconBg, iconColor, accent, card
           </div>
         </div>
         <div>
-          <span className="text-[38px] font-black leading-none tracking-[-0.05em] text-slate-900 count-value">{value}</span>
+          <span className="text-[38px] font-bold leading-none tracking-[-0.05em] text-slate-900 count-value">{value}</span>
           <p className="mt-0.5 text-[8.5px] font-medium text-slate-400">{subtitle}</p>
         </div>
       </div>
@@ -215,7 +232,7 @@ function CompletionKpiCard({ counts }) {
           </div>
         </div>
         <div>
-          <span className="text-[38px] font-black leading-none tracking-[-0.05em] text-violet-700 count-value">{rate}%</span>
+          <span className="text-[38px] font-bold leading-none tracking-[-0.05em] text-violet-700 count-value">{rate}%</span>
           <p className="mt-0.5 text-[8.5px] font-medium text-violet-400">{counts.completed}/{counts.all} done</p>
         </div>
       </div>
@@ -223,16 +240,39 @@ function CompletionKpiCard({ counts }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Top Header — greeting + KPIs left, calendar right, no dead space          */
-/* -------------------------------------------------------------------------- */
+// ─── Connection status pill ───────────────────────────────────────────────────
 
-function TopHeader({ displayName, fetchDashboard, counts }) {
+/**
+ * Small indicator shown in the header. States:
+ *   connected  – green pulse  "Live"
+ *   connecting – amber pulse  "Connecting"
+ *   error      – red dot      "Offline"
+ */
+function ConnectionStatus({ status }) {
+  const cfg = {
+    connected:  { dot: 'bg-emerald-500 animate-pulse', text: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100', label: 'Live' },
+    connecting: { dot: 'bg-amber-400 animate-pulse',   text: 'text-amber-600',   bg: 'bg-amber-50 border-amber-100',   label: 'Connecting…' },
+    error:      { dot: 'bg-red-500',                   text: 'text-red-600',     bg: 'bg-red-50 border-red-100',       label: 'Offline' },
+  }[status] ?? { dot: 'bg-slate-400', text: 'text-slate-500', bg: 'bg-slate-50 border-slate-200', label: 'Unknown' };
+
+  return (
+    <div className={`hidden items-center gap-2 rounded-full border px-3 py-1.5 sm:flex ${cfg.bg}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
+      <span className={`text-[10px] font-extrabold uppercase tracking-[0.1em] ${cfg.text}`}>
+        {cfg.label}
+      </span>
+    </div>
+  );
+}
+
+// ─── Top header ───────────────────────────────────────────────────────────────
+
+function TopHeader({ displayName, fetchDashboard, counts, signalRStatus }) {
   return (
     <header className="dashboard-header">
       <div className="dashboard-header-grid">
 
-        {/* ── Left column: greeting banner + KPI cards ── */}
+        {/* Left column: greeting + KPIs */}
         <div className="dashboard-hero relative overflow-hidden rounded-[20px] border border-indigo-100/80 bg-gradient-to-r from-white via-indigo-50/45 to-violet-50/70 px-5 pt-4 pb-4 shadow-[0_5px_22px_rgba(15,23,42,0.025)]">
           <div className="absolute -right-16 -top-20 h-44 w-44 rounded-full bg-indigo-200/20 blur-3xl" />
 
@@ -243,8 +283,11 @@ function TopHeader({ displayName, fetchDashboard, counts }) {
                 <span className="grid h-6 w-6 place-items-center rounded-lg bg-indigo-100 text-indigo-600">
                   <TIcon name="sparkles" size={12} />
                 </span>
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-indigo-500">Admin Workspace</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-indigo-500">
+                  Admin Workspace
+                </span>
               </div>
+
               <h1 className="truncate text-[25.5px] font-black leading-none tracking-[-0.045em] text-slate-900">
                 Welcome back,{' '}
                 <span className="text-indigo-600 inline-flex items-center gap-1.5">
@@ -255,13 +298,16 @@ function TopHeader({ displayName, fetchDashboard, counts }) {
                   <TIcon name="wave-hand" size={28} className="text-amber-400" />
                 </span>
               </h1>
-              <p className="mt-1 text-[10.5px] font-medium text-slate-400">Monitor tasks, workload and team activity from one place.</p>
+
+              <p className="mt-1 text-[10.5px] font-medium text-slate-400">
+                Monitor tasks, workload and team activity from one place.
+              </p>
             </div>
+
             <div className="flex shrink-0 items-center gap-2">
-              <div className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 sm:flex">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-emerald-600">Operational</span>
-              </div>
+              {/* SignalR connection status replaces static "Operational" pill */}
+              <ConnectionStatus status={signalRStatus} />
+
               <button
                 type="button"
                 onClick={fetchDashboard}
@@ -276,34 +322,34 @@ function TopHeader({ displayName, fetchDashboard, counts }) {
           {/* Divider */}
           <div className="relative mb-3 h-px bg-indigo-100/60" />
 
-          {/* KPI strip — 3×2 grid under greeting */}
+          {/* KPI strip */}
           <div className="kpi-strip relative">
-            <KpiCard title="All Tasks"   value={counts.all}        subtitle="Total"           icon="layout-kanban"   iconBg="bg-indigo-50"  iconColor="text-indigo-600"  accent="bg-indigo-500"  cardBg="from-white to-indigo-50/60" />
-            <KpiCard title="Pending"     value={counts.pending}    subtitle="Awaiting"        icon="clock-pause"     iconBg="bg-amber-50"   iconColor="text-amber-600"   accent="bg-amber-500"   cardBg="from-white to-amber-50/45"  />
-            <KpiCard title="In Progress" value={counts.inProgress} subtitle="Active"          icon="progress"        iconBg="bg-blue-50"    iconColor="text-blue-600"    accent="bg-blue-500"    cardBg="from-white to-blue-50/45"   />
-            <KpiCard title="Completed"   value={counts.completed}  subtitle="Done"            icon="circle-check"    iconBg="bg-emerald-50" iconColor="text-emerald-600" accent="bg-emerald-500" cardBg="from-white to-emerald-50/45" />
-            <KpiCard title="Overdue"     value={counts.overdue}    subtitle="Attention"       icon="alert-triangle"  iconBg="bg-red-50"     iconColor="text-red-500"     accent="bg-red-500"     cardBg="from-white to-red-50/40"    />
+            <KpiCard title="All Tasks"   value={counts.all}        subtitle="Total"    icon="layout-kanban"   iconBg="bg-indigo-50"  iconColor="text-indigo-600" accent="bg-indigo-500" cardBg="from-white to-indigo-50/60" />
+            <KpiCard title="Pending"     value={counts.pending}     subtitle="Awaiting" icon="clock-pause"     iconBg="bg-amber-50"   iconColor="text-amber-600"  accent="bg-amber-500"  cardBg="from-white to-amber-50/45" />
+            <KpiCard title="In Progress" value={counts.inProgress}  subtitle="Active"   icon="progress"        iconBg="bg-blue-50"    iconColor="text-blue-600"   accent="bg-blue-500"   cardBg="from-white to-blue-50/45" />
+            <KpiCard title="Completed"   value={counts.completed}   subtitle="Done"     icon="circle-check"    iconBg="bg-emerald-50" iconColor="text-emerald-600" accent="bg-emerald-500" cardBg="from-white to-emerald-50/45" />
+            <KpiCard title="Overdue"     value={counts.overdue}     subtitle="Attention" icon="alert-triangle" iconBg="bg-red-50"     iconColor="text-red-500"    accent="bg-red-500"    cardBg="from-white to-red-50/40" />
             <CompletionKpiCard counts={counts} />
           </div>
         </div>
 
-        {/* ── Right column: calendar ── */}
+        {/* Right column: calendar */}
         <CalendarCard />
       </div>
     </header>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Recently Added Tasks — Card Grid View                                      */
-/* -------------------------------------------------------------------------- */
+// ─── Recently added tasks ─────────────────────────────────────────────────────
 
 function RecentlyAddedTasks({ tasks }) {
   const recentTasks = useMemo(() => tasks.slice(0, 5), [tasks]);
 
   const formatDate = (date) => {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+    });
   };
 
   const priorityConfig = {
@@ -370,7 +416,7 @@ function RecentlyAddedTasks({ tasks }) {
                   {task.title || 'Untitled Task'}
                 </h3>
 
-                {/* Assignee */}
+                {/* Assignee + due date */}
                 <p className="mb-3 text-[10.5px] text-slate-400">
                   <span className="font-medium text-slate-500">{task.assignedToName || 'Unassigned'}</span>
                   {task.dueDate && (
@@ -383,7 +429,7 @@ function RecentlyAddedTasks({ tasks }) {
                   )}
                 </p>
 
-                {/* Footer */}
+                {/* Footer badges */}
                 <div className="mt-auto flex items-center justify-between gap-2">
                   <span className={`rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide ${getStatusBadgeColor(task.status)}`}>
                     <span className={`mr-1 inline-block h-1.5 w-1.5 rounded-full ${getStatusDot(task.status)}`} />
@@ -402,24 +448,29 @@ function RecentlyAddedTasks({ tasks }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Dashboard                                                                  */
-/* -------------------------------------------------------------------------- */
+// ─── Admin Dashboard ──────────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  const [tasks,          setTasks]          = useState([]);
+  const [loading,        setLoading]        = useState(true);
+  const [error,          setError]          = useState(null);
+  // 'connecting' | 'connected' | 'error'
+  const [signalRStatus,  setSignalRStatus]  = useState('connecting');
+
+  // ── Fetch dashboard data ─────────────────────────────────────────────────
 
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
     setError(null);
+
     try {
       const response = await taskService.getTasks({});
+
       if (response.success) {
-        const raw = response.data;
-        const items = Array.isArray(raw) ? raw : (raw?.items ?? []);
+        const raw   = response.data;
+        const items = Array.isArray(raw) ? raw : raw?.items ?? [];
         setTasks(items);
       } else {
         setError(response.message || 'Failed to load dashboard');
@@ -431,18 +482,98 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  useEffect(() => { fetchDashboard(); }, [fetchDashboard]);
+  // ── Initial load ─────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    fetchDashboard();
+  }, [fetchDashboard]);
+
+  // ── SignalR setup ────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    let isMounted        = true;
+    let connection       = null;
+    let listenersAdded   = false;
+
+    const handleDashboardUpdated = async () => {
+      if (!isMounted) return;
+      await fetchDashboard();
+    };
+
+    const handleTaskAssigned = async (task) => {
+      if (!isMounted) return;
+      await fetchDashboard();
+    };
+
+    const setup = async () => {
+      try {
+        setSignalRStatus('connecting');
+        connection = await startSignalRConnection();
+
+        if (!isMounted || !connection) {
+          setSignalRStatus('error');
+          return;
+        }
+
+        // Register listeners
+        connection.on('DashboardUpdated', handleDashboardUpdated);
+        connection.on('TaskAssigned',     handleTaskAssigned);
+        listenersAdded = true;
+
+        setSignalRStatus('connected');
+
+        // Track future connection state changes (reconnect / disconnect)
+        connection.onreconnecting(() => {
+          if (isMounted) setSignalRStatus('connecting');
+        });
+
+        connection.onreconnected(() => {
+          if (isMounted) {
+            setSignalRStatus('connected');
+            // Refresh in case we missed events during the reconnect window
+            fetchDashboard();
+          }
+        });
+
+        connection.onclose(() => {
+          if (isMounted) setSignalRStatus('error');
+        });
+
+      } catch (err) {
+        console.error('[AdminDashboard] SignalR › setup failed:', err);
+        if (isMounted) setSignalRStatus('error');
+      }
+    };
+
+    setup();
+
+    // Cleanup: remove only our listeners; leave the connection alive for
+    // other components that may share the same HubConnection instance.
+    return () => {
+      isMounted = false;
+
+      if (connection && listenersAdded) {
+        connection.off('DashboardUpdated', handleDashboardUpdated);
+        connection.off('TaskAssigned',     handleTaskAssigned);
+      }
+    };
+  }, [fetchDashboard]);
+
+  // ── KPI counts ───────────────────────────────────────────────────────────
 
   const counts = useMemo(() => {
-    const pending = tasks.filter(t => t.status === 'Pending').length;
-    const inProgress = tasks.filter(t => t.status === 'InProgress').length;
-    const completed = tasks.filter(t => t.status === 'Completed').length;
-    const cancelled = tasks.filter(t => t.status === 'Cancelled').length;
-    const overdue = tasks.filter(isTaskOverdue).length;
+    const pending    = tasks.filter((t) => t.status === 'Pending').length;
+    const inProgress = tasks.filter((t) => t.status === 'InProgress').length;
+    const completed  = tasks.filter((t) => t.status === 'Completed').length;
+    const cancelled  = tasks.filter((t) => t.status === 'Cancelled').length;
+    const overdue    = tasks.filter(isTaskOverdue).length;
+
     return { all: tasks.length, pending, inProgress, completed, cancelled, overdue };
   }, [tasks]);
 
   const displayName = user?.fullName || user?.name || user?.username || 'Admin';
+
+  // ── Loading ──────────────────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -462,6 +593,8 @@ export default function AdminDashboard() {
     );
   }
 
+  // ── Error ────────────────────────────────────────────────────────────────
+
   if (error) {
     return (
       <div className="dashboard-shell">
@@ -478,7 +611,8 @@ export default function AdminDashboard() {
               onClick={fetchDashboard}
               className="mt-5 inline-flex h-9 items-center gap-2 rounded-xl bg-slate-900 px-4 text-[13px] font-semibold text-white hover:bg-slate-800"
             >
-              <TIcon name="refresh" size={13} /> Try Again
+              <TIcon name="refresh" size={13} />
+              Try Again
             </button>
           </div>
         </div>
@@ -486,23 +620,27 @@ export default function AdminDashboard() {
     );
   }
 
+  // ── Dashboard UI ─────────────────────────────────────────────────────────
+
   return (
     <div className="dashboard-shell">
       <style>{dashboardStyles}</style>
 
-      <TopHeader displayName={displayName} fetchDashboard={fetchDashboard} counts={counts} />
+      <TopHeader
+        displayName={displayName}
+        fetchDashboard={fetchDashboard}
+        counts={counts}
+        signalRStatus={signalRStatus}
+      />
 
       <div className="dashboard-content">
-        {/* Recently Added Tasks — Card Grid */}
         <RecentlyAddedTasks tasks={tasks} />
       </div>
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Styles                                                                     */
-/* -------------------------------------------------------------------------- */
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const dashboardStyles = `
   @keyframes dashboardFade {
@@ -510,7 +648,6 @@ const dashboardStyles = `
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ---- Shell ---- */
   .dashboard-shell {
     height: 100%;
     width: 100%;
@@ -529,15 +666,15 @@ const dashboardStyles = `
     box-sizing: border-box;
   }
 
-  .dashboard-shell::-webkit-scrollbar { width: 6px; }
+  .dashboard-shell::-webkit-scrollbar       { width: 6px; }
   .dashboard-shell::-webkit-scrollbar-track { background: transparent; }
   .dashboard-shell::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
   .dashboard-shell::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   .dashboard-shell { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+
   .dashboard-shell, .dashboard-shell * { box-sizing: border-box; }
   .dashboard-shell > * { min-width: 0; flex-shrink: 0; }
 
-  /* ---- Header Grid ---- */
   .dashboard-header-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 380px;
@@ -545,13 +682,11 @@ const dashboardStyles = `
     gap: 12px;
   }
 
-  /* Hero: flex column, stretches to match calendar height */
   .dashboard-hero {
     display: flex;
     flex-direction: column;
   }
 
-  /* KPI strip: 3 cols x 2 rows — cards breathe properly */
   .kpi-strip {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -563,10 +698,9 @@ const dashboardStyles = `
 
   .kpi-card { min-height: 72px; }
 
-  /* Special styling for count values */
   .count-value {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -0.03em;
   }
 
@@ -579,7 +713,6 @@ const dashboardStyles = `
 
   .dashboard-content > * { flex-shrink: 0; }
 
-  /* ---- Recent Tasks Card Grid ---- */
   .recent-tasks-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -588,7 +721,6 @@ const dashboardStyles = `
 
   .task-card { min-height: 160px; }
 
-  /* ---- line-clamp ---- */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -596,32 +728,28 @@ const dashboardStyles = `
     overflow: hidden;
   }
 
-  /* ---- 1300px ---- */
   @media (max-width: 1300px) {
-    .dashboard-header-grid { grid-template-columns: minmax(0, 1fr) 340px; }
-    .recent-tasks-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .dashboard-header-grid  { grid-template-columns: minmax(0, 1fr) 340px; }
+    .recent-tasks-grid      { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
 
-  /* ---- 1020px ---- */
   @media (max-width: 1020px) {
     .dashboard-header-grid { grid-template-columns: minmax(0, 1fr); }
-    .kpi-strip { grid-template-columns: repeat(3, minmax(0,1fr)); }
-    .recent-tasks-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .kpi-strip             { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .recent-tasks-grid     { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 
-  /* ---- 700px ---- */
   @media (max-width: 700px) {
-    .dashboard-shell { padding: 0 8px 8px; gap: 8px; }
-    .dashboard-hero { border-radius: 16px !important; padding: 13px !important; }
+    .dashboard-shell   { padding: 0 8px 8px; gap: 8px; }
+    .dashboard-hero    { border-radius: 16px !important; padding: 13px !important; }
     .dashboard-content { gap: 8px; }
-    .kpi-strip { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; }
+    .kpi-strip         { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; }
     .recent-tasks-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
-  /* ---- 480px ---- */
   @media (max-width: 480px) {
-    .kpi-strip { grid-template-columns: minmax(0, 1fr); }
-    .calendar-card { min-height: 140px; }
+    .kpi-strip         { grid-template-columns: minmax(0, 1fr); }
+    .calendar-card     { min-height: 140px; }
     .recent-tasks-grid { grid-template-columns: minmax(0, 1fr); }
   }
 `;

@@ -6,6 +6,8 @@ namespace Taskify.API.Hubs;
 [Authorize]
 public class TaskHub : Hub
 {
+    private const string AdminGroup = "Admins";
+
     private readonly ILogger<TaskHub> _logger;
 
     public TaskHub(ILogger<TaskHub> logger)
@@ -21,6 +23,18 @@ public class TaskHub : Hub
             "SignalR user connected. UserId: {UserId}, ConnectionId: {ConnectionId}",
             userId,
             Context.ConnectionId);
+
+        if (Context.User?.IsInRole("Admin") == true)
+        {
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId,
+                AdminGroup);
+
+            _logger.LogInformation(
+                "SignalR admin added to dashboard group. UserId: {UserId}, ConnectionId: {ConnectionId}",
+                userId,
+                Context.ConnectionId);
+        }
 
         await base.OnConnectedAsync();
     }
