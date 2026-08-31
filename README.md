@@ -20,7 +20,7 @@ Taskify is a full-stack task management application built with ASP.NET Core Web 
 - Status-based task views
 
 ### Admin Management
-- Admin dashboard with task and user statistics
+- Live Admin dashboard with task and user statistics
 - View and manage users
 - Activate and deactivate user accounts
 - Soft delete user accounts
@@ -44,6 +44,7 @@ Taskify is a full-stack task management application built with ASP.NET Core Web 
 - JWT Authentication
 - FluentValidation
 - Serilog
+- SignalR
 
 ### Frontend
 - React
