@@ -64,6 +64,11 @@ try
     // Task Services
     builder.Services.AddScoped<ITaskService, TaskService>();
 
+    // Profile Services
+    builder.Services.AddScoped<
+        IProfileService,
+        ProfileService>();
+
     // JWT Authentication
     builder.Services
         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
