@@ -940,6 +940,21 @@ function TaskDrawer({
       assignedToName: '',
     });
 
+  /* ─── Reset form to default state ─────────────────────────────────────── */
+  const resetForm = useCallback(() => {
+    setFormData({
+      title: '',
+      description: '',
+      category: '',
+      priority: 2,
+      status: 1,
+      dueDate: '',
+      assignedToUserId: null,
+      assignedToName: '',
+    });
+    setError(null);
+  }, []);
+
   /* ─── Load users ─────────────────────────────────────────────────────── */
   const loadUsers = useCallback(
     async () => {
@@ -991,6 +1006,8 @@ function TaskDrawer({
 
   /* ─── Initialize form ───────────────────────────────────────────────── */
   useEffect(() => {
+    // Only set form data if we have a task (view/edit mode)
+    // For new task creation, we want the form to be empty
     if (task) {
       const priorityMap = {
         Low: 1,
@@ -1034,21 +1051,12 @@ function TaskDrawer({
           task.assignedToName ||
           '',
       });
+      setError(null);
     } else {
-      setFormData({
-        title: '',
-        description: '',
-        category: '',
-        priority: 2,
-        status: 1,
-        dueDate: '',
-        assignedToUserId: null,
-        assignedToName: '',
-      });
+      // Reset form when task is null (new task mode)
+      resetForm();
     }
-
-    setError(null);
-  }, [task]);
+  }, [task, resetForm]);
 
   /* ─── Drawer open/close animation ───────────────────────────────────── */
   useEffect(() => {
@@ -1069,6 +1077,8 @@ function TaskDrawer({
       setVisible(false);
       document.body.style.overflow =
         'unset';
+      // Reset form when drawer closes
+      resetForm();
     }
 
     return () => {
@@ -1079,6 +1089,7 @@ function TaskDrawer({
     open,
     currentMode,
     loadUsers,
+    resetForm,
   ]);
 
   /* ─── Sync external mode ────────────────────────────────────────────── */
@@ -1229,6 +1240,8 @@ function TaskDrawer({
           '/admin/tasks',
           payload
         );
+        // Reset form after successful creation
+        resetForm();
       }
 
       onSuccess();

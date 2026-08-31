@@ -7,19 +7,25 @@ using Taskify.API.Controllers;
 using Taskify.Business.DTOs.Tasks;
 using Taskify.Business.Interfaces;
 using Xunit;
+using Microsoft.AspNetCore.SignalR;
+using Taskify.API.Hubs;
 
 namespace Taskify.Tests.Controllers;
 
 public class TasksControllerTests
 {
     private readonly Mock<ITaskService> _taskServiceMock;
+    private readonly Mock<IHubContext<TaskHub>> _hubContextMock;
     private readonly TasksController _controller;
 
     public TasksControllerTests()
     {
         _taskServiceMock = new Mock<ITaskService>();
+        _hubContextMock = new Mock<IHubContext<TaskHub>>();
+        
         _controller = new TasksController(
-            _taskServiceMock.Object);
+            _taskServiceMock.Object,
+            _hubContextMock.Object);
 
         SetUser(1, "User");
     }

@@ -3,16 +3,15 @@ import api from './api';
 const taskService = {
   // Get all tasks (admin sees all, user sees their own + assigned)
   async getTasks(params = {}) {
-  try {
-    const response = await api.get('/tasks', { params });
-    console.log('raw response:', response.data); // ← add this temporarily
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching tasks:', error);
-    throw error;
-  }
+    try {
+      const response = await api.get('/tasks', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      throw error;
+    }
   },
-  
+
   async getAssignedTasks(params = {}) {
     try {
       const response = await api.get('/tasks/assigned', { params });
@@ -22,7 +21,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async getPendingTasks(params = {}) {
     try {
       const response = await api.get('/tasks/pending', { params });
@@ -32,7 +31,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async getInProgressTasks(params = {}) {
     try {
       const response = await api.get('/tasks/in-progress', { params });
@@ -42,7 +41,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async getCompletedTasks(params = {}) {
     try {
       const response = await api.get('/tasks/completed', { params });
@@ -52,7 +51,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async getOverdueTasks(params = {}) {
     try {
       const response = await api.get('/tasks/overdue', { params });
@@ -62,7 +61,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async getCancelledTasks(params = {}) {
     try {
       const response = await api.get('/tasks/cancelled', { params });
@@ -72,7 +71,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async getTask(id) {
     try {
       const response = await api.get(`/tasks/${id}`);
@@ -82,7 +81,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async createTask(data) {
     try {
       const response = await api.post('/tasks', data);
@@ -92,7 +91,7 @@ const taskService = {
       throw error;
     }
   },
-  
+
   async updateTask(id, data) {
     try {
       const response = await api.put(`/tasks/${id}`, data);
@@ -102,18 +101,28 @@ const taskService = {
       throw error;
     }
   },
-  
-async updateTaskStatus(id, status) {
-  try {
-    const statusMap = { Pending: 1, InProgress: 2, Completed: 3, Cancelled: 4 };
-    const response = await api.patch(`/tasks/${id}/status`, { status: statusMap[status] ?? 1 });
-    return response.data;
-  } catch (error) {
-    console.error('Error updating task status:', error);
-    throw error;
-  }
-},
-  
+
+  async updateTaskStatus(id, status) {
+    try {
+      const statusMap = {
+        Pending: 1,
+        InProgress: 2,
+        Completed: 3,
+        Cancelled: 4
+      };
+
+      const response = await api.patch(
+        `/tasks/${id}/status`,
+        { status: statusMap[status] ?? 1 }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      throw error;
+    }
+  },
+
   async deleteTask(id) {
     try {
       const response = await api.delete(`/tasks/${id}`);
