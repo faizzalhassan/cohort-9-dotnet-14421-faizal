@@ -62,6 +62,14 @@ function PasswordInput({
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleChange = (event) => {
+    onChange(event.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((previous) => !previous);
+  };
+
   return (
     <div>
       <label className="mb-2 block text-[13px] font-semibold text-slate-700">
@@ -71,8 +79,8 @@ function PasswordInput({
       <div className="relative">
         <input
           type={showPassword ? 'text' : 'password'}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
+          value={value ?? ''}
+          onChange={handleChange}
           placeholder={placeholder}
           autoComplete="new-password"
           className="
@@ -89,9 +97,7 @@ function PasswordInput({
 
         <button
           type="button"
-          onClick={() =>
-            setShowPassword((previous) => !previous)
-          }
+          onClick={togglePasswordVisibility}
           className="
             absolute right-0 top-0
             grid h-12 w-12
@@ -174,7 +180,6 @@ function AccordionHeader({
 
 export default function AdminProfile() {
   const [profile, setProfile] = useState(null);
-
   const [loading, setLoading] = useState(true);
 
   const [detailsOpen, setDetailsOpen] = useState(true);
@@ -202,7 +207,7 @@ export default function AdminProfile() {
 
       const response = await api.get('/profile');
 
-      const profileData = response.data?.data;
+      const profileData = response?.data?.data;
 
       if (!profileData) {
         throw new Error('Profile data was not returned.');
@@ -211,11 +216,14 @@ export default function AdminProfile() {
       setProfile(profileData);
       setFullName(profileData.fullName || '');
     } catch (error) {
-      console.error('Failed to load admin profile:', error);
+      console.error(
+        'Failed to load admin profile:',
+        error
+      );
 
       setErrorMessage(
-        error.response?.data?.message ||
-          error.message ||
+        error?.response?.data?.message ||
+          error?.message ||
           'Unable to load your profile.'
       );
     } finally {
@@ -264,15 +272,19 @@ export default function AdminProfile() {
      Password Validation
   ───────────────────────────────────────────────────────── */
 
-  const passwordRequirements = useMemo(() => {
-    return PASSWORD_REQUIREMENTS.map((requirement) => ({
-      key: requirement.key,
-      label: requirement.label,
-      valid: requirement.test(newPassword),
-    }));
-  }, [newPassword]);
+  const passwordRequirements =
+    PASSWORD_REQUIREMENTS.map((requirement) => {
+      const value = newPassword || '';
+
+      return {
+        key: requirement.key,
+        label: requirement.label,
+        valid: requirement.test(value),
+      };
+    });
 
   const passwordIsValid =
+    passwordRequirements.length > 0 &&
     passwordRequirements.every(
       (requirement) => requirement.valid
     );
@@ -318,10 +330,16 @@ export default function AdminProfile() {
         fullName: trimmedName,
       });
 
-      setProfile((previous) => ({
-        ...previous,
-        fullName: trimmedName,
-      }));
+      setProfile((previous) => {
+        if (!previous) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          fullName: trimmedName,
+        };
+      });
 
       setFullName(trimmedName);
 
@@ -335,7 +353,7 @@ export default function AdminProfile() {
       );
 
       setErrorMessage(
-        error.response?.data?.message ||
+        error?.response?.data?.message ||
           'Unable to update your full name.'
       );
     } finally {
@@ -394,7 +412,7 @@ export default function AdminProfile() {
       );
 
       setErrorMessage(
-        error.response?.data?.message ||
+        error?.response?.data?.message ||
           'Unable to change your password.'
       );
     } finally {
@@ -433,7 +451,10 @@ export default function AdminProfile() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="rounded-2xl border border-red-100 bg-white p-8 text-center">
             <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-red-50 text-red-500">
-              <TIcon name="alert-circle" size={22} />
+              <TIcon
+                name="alert-circle"
+                size={22}
+              />
             </div>
 
             <h2 className="text-[15px] font-semibold text-slate-900">
@@ -456,7 +477,10 @@ export default function AdminProfile() {
                 transition hover:bg-slate-800
               "
             >
-              <TIcon name="refresh" size={15} />
+              <TIcon
+                name="refresh"
+                size={15}
+              />
               Try again
             </button>
           </div>
@@ -527,32 +551,38 @@ export default function AdminProfile() {
 
                 {/* Avatar */}
 
-                <div className="
-                  mx-auto flex h-28 w-28
-                  items-center justify-center
-                  rounded-full bg-indigo-100
-                  text-3xl font-bold
-                  text-indigo-700
-                  ring-8 ring-indigo-50
-                ">
+                <div
+                  className="
+                    mx-auto flex h-28 w-28
+                    items-center justify-center
+                    rounded-full bg-indigo-100
+                    text-3xl font-bold
+                    text-indigo-700
+                    ring-8 ring-indigo-50
+                  "
+                >
                   {initials}
                 </div>
 
                 {/* Name */}
 
                 <div className="mt-5 text-center">
-                  <h2 className="
-                    truncate text-[19px]
-                    font-bold text-slate-900
-                  ">
+                  <h2
+                    className="
+                      truncate text-[19px]
+                      font-bold text-slate-900
+                    "
+                  >
                     {profile.fullName}
                   </h2>
 
-                  <p className="
-                    mt-1.5 truncate
-                    text-[13px] font-medium
-                    text-slate-500
-                  ">
+                  <p
+                    className="
+                      mt-1.5 truncate
+                      text-[13px] font-medium
+                      text-slate-500
+                    "
+                  >
                     {profile.email}
                   </p>
                 </div>
@@ -565,11 +595,13 @@ export default function AdminProfile() {
                 {/* Created */}
 
                 <div className="flex items-start gap-4">
-                  <span className="
-                    grid h-9 w-9 shrink-0
-                    place-items-center rounded-lg
-                    bg-slate-50 text-slate-500
-                  ">
+                  <span
+                    className="
+                      grid h-9 w-9 shrink-0
+                      place-items-center rounded-lg
+                      bg-slate-50 text-slate-500
+                    "
+                  >
                     <TIcon
                       name="calendar-plus"
                       size={17}
@@ -577,18 +609,22 @@ export default function AdminProfile() {
                   </span>
 
                   <div>
-                    <p className="
-                      text-[11px] font-semibold
-                      uppercase tracking-[0.1em]
-                      text-slate-400
-                    ">
+                    <p
+                      className="
+                        text-[11px] font-semibold
+                        uppercase tracking-[0.1em]
+                        text-slate-400
+                      "
+                    >
                       Account created
                     </p>
 
-                    <p className="
-                      mt-1 text-[13px]
-                      font-medium text-slate-700
-                    ">
+                    <p
+                      className="
+                        mt-1 text-[13px]
+                        font-medium text-slate-700
+                      "
+                    >
                       {new Date(
                         profile.accountCreatedOn
                       ).toLocaleDateString(
@@ -628,11 +664,13 @@ export default function AdminProfile() {
                   </span>
 
                   <div>
-                    <p className="
-                      text-[11px] font-semibold
-                      uppercase tracking-[0.1em]
-                      text-slate-400
-                    ">
+                    <p
+                      className="
+                        text-[11px] font-semibold
+                        uppercase tracking-[0.1em]
+                        text-slate-400
+                      "
+                    >
                       Account status
                     </p>
 
@@ -666,11 +704,13 @@ export default function AdminProfile() {
                 Profile Details
             ─────────────────────────────────────────────── */}
 
-            <section className="
-              overflow-hidden rounded-2xl
-              border border-slate-200
-              bg-white shadow-sm
-            ">
+            <section
+              className="
+                overflow-hidden rounded-2xl
+                border border-slate-200
+                bg-white shadow-sm
+              "
+            >
               <AccordionHeader
                 icon="user"
                 title="Profile details"
@@ -684,19 +724,23 @@ export default function AdminProfile() {
               />
 
               {detailsOpen && (
-                <div className="
-                  border-t border-slate-100
-                  p-5
-                ">
+                <div
+                  className="
+                    border-t border-slate-100
+                    p-5
+                  "
+                >
                   <div className="grid grid-cols-2 gap-5">
 
                     {/* Full Name */}
 
                     <div className="col-span-2 lg:col-span-1">
-                      <label className="
-                        mb-2 block text-[13px]
-                        font-semibold text-slate-700
-                      ">
+                      <label
+                        className="
+                          mb-2 block text-[13px]
+                          font-semibold text-slate-700
+                        "
+                      >
                         Full name
                       </label>
 
@@ -750,14 +794,16 @@ export default function AdminProfile() {
                           >
                             {savingName ? (
                               <>
-                                <span className="
-                                  h-3.5 w-3.5
-                                  animate-spin
-                                  rounded-full
-                                  border-2
-                                  border-white/30
-                                  border-t-white
-                                " />
+                                <span
+                                  className="
+                                    h-3.5 w-3.5
+                                    animate-spin
+                                    rounded-full
+                                    border-2
+                                    border-white/30
+                                    border-t-white
+                                  "
+                                />
 
                                 <span className="hidden sm:inline">
                                   Saving
@@ -779,10 +825,12 @@ export default function AdminProfile() {
                         )}
                       </div>
 
-                      <p className="
-                        mt-2 text-[11px]
-                        font-medium text-slate-400
-                      ">
+                      <p
+                        className="
+                          mt-2 text-[11px]
+                          font-medium text-slate-400
+                        "
+                      >
                         Update your first and last name.
                       </p>
                     </div>
@@ -790,10 +838,12 @@ export default function AdminProfile() {
                     {/* Email */}
 
                     <div className="col-span-2 lg:col-span-1">
-                      <label className="
-                        mb-2 block text-[13px]
-                        font-semibold text-slate-700
-                      ">
+                      <label
+                        className="
+                          mb-2 block text-[13px]
+                          font-semibold text-slate-700
+                        "
+                      >
                         Email address
                       </label>
 
@@ -815,12 +865,14 @@ export default function AdminProfile() {
                           "
                         />
 
-                        <span className="
-                          absolute right-0 top-0
-                          grid h-12 w-12
-                          place-items-center
-                          text-slate-400
-                        ">
+                        <span
+                          className="
+                            absolute right-0 top-0
+                            grid h-12 w-12
+                            place-items-center
+                            text-slate-400
+                          "
+                        >
                           <TIcon
                             name="lock"
                             size={16}
@@ -828,14 +880,15 @@ export default function AdminProfile() {
                         </span>
                       </div>
 
-                      <p className="
-                        mt-2 text-[11px]
-                        font-medium text-slate-400
-                      ">
+                      <p
+                        className="
+                          mt-2 text-[11px]
+                          font-medium text-slate-400
+                        "
+                      >
                         Email cannot be changed.
                       </p>
                     </div>
-
                   </div>
                 </div>
               )}
@@ -845,11 +898,13 @@ export default function AdminProfile() {
                 Password & Security
             ─────────────────────────────────────────────── */}
 
-            <section className="
-              overflow-hidden rounded-2xl
-              border border-slate-200
-              bg-white shadow-sm
-            ">
+            <section
+              className="
+                overflow-hidden rounded-2xl
+                border border-slate-200
+                bg-white shadow-sm
+              "
+            >
               <AccordionHeader
                 icon="lock"
                 title="Password & security"
@@ -863,11 +918,12 @@ export default function AdminProfile() {
               />
 
               {passwordOpen && (
-                <div className="
-                  border-t border-slate-100
-                  p-5
-                ">
-
+                <div
+                  className="
+                    border-t border-slate-100
+                    p-5
+                  "
+                >
                   <div className="grid gap-5 sm:grid-cols-2">
 
                     {/* Current Password */}
@@ -884,10 +940,12 @@ export default function AdminProfile() {
                         placeholder="Enter your current password"
                       />
 
-                      <p className="
-                        mt-2 text-[11px]
-                        font-medium text-slate-400
-                      ">
+                      <p
+                        className="
+                          mt-2 text-[11px]
+                          font-medium text-slate-400
+                        "
+                      >
                         Your current password is required
                         to change your password.
                       </p>
@@ -909,45 +967,36 @@ export default function AdminProfile() {
 
                       {newPassword.length > 0 && (
                         <div className="mt-3 space-y-1.5">
-
                           {passwordRequirements.map(
-                            (requirement) => {
-                              const isValid =
-                                requirement.test(
-                                  newPassword
-                                );
+                            (requirement) => (
+                              <div
+                                key={requirement.key}
+                                className={`
+                                  flex items-center
+                                  gap-2 text-[11px]
+                                  font-medium
+                                  ${
+                                    requirement.valid
+                                      ? 'text-emerald-600'
+                                      : 'text-slate-400'
+                                  }
+                                `}
+                              >
+                                <TIcon
+                                  name={
+                                    requirement.valid
+                                      ? 'circle-check'
+                                      : 'circle'
+                                  }
+                                  size={13}
+                                />
 
-                              return (
-                                <div
-                                  key={requirement.key}
-                                  className={`
-                                    flex items-center
-                                    gap-2 text-[11px]
-                                    font-medium
-                                    ${
-                                      isValid
-                                        ? 'text-emerald-600'
-                                        : 'text-slate-400'
-                                    }
-                                  `}
-                                >
-                                  <TIcon
-                                    name={
-                                      isValid
-                                        ? 'circle-check'
-                                        : 'circle'
-                                    }
-                                    size={13}
-                                  />
-
-                                  <span>
-                                    {requirement.label}
-                                  </span>
-                                </div>
-                              );
-                            }
+                                <span>
+                                  {requirement.label}
+                                </span>
+                              </div>
+                            )
                           )}
-
                         </div>
                       )}
                     </div>
@@ -996,33 +1045,38 @@ export default function AdminProfile() {
                         </div>
                       )}
                     </div>
-
                   </div>
 
                   {/* Password Footer */}
 
-                  <div className="
-                    mt-5 flex flex-col
-                    gap-3 border-t
-                    border-slate-100
-                    pt-5 sm:flex-row
-                    sm:items-center
-                    sm:justify-between
-                  ">
+                  <div
+                    className="
+                      mt-5 flex flex-col
+                      gap-3 border-t
+                      border-slate-100
+                      pt-5 sm:flex-row
+                      sm:items-center
+                      sm:justify-between
+                    "
+                  >
                     <div>
-                      <p className="
-                        text-[12px]
-                        font-semibold
-                        text-slate-600
-                      ">
+                      <p
+                        className="
+                          text-[12px]
+                          font-semibold
+                          text-slate-600
+                        "
+                      >
                         Keep your account secure.
                       </p>
 
-                      <p className="
-                        mt-0.5 text-[11px]
-                        font-medium
-                        text-slate-400
-                      ">
+                      <p
+                        className="
+                          mt-0.5 text-[11px]
+                          font-medium
+                          text-slate-400
+                        "
+                      >
                         Use a strong password that
                         you do not use elsewhere.
                       </p>
@@ -1054,14 +1108,16 @@ export default function AdminProfile() {
                     >
                       {savingPassword ? (
                         <>
-                          <span className="
-                            h-3.5 w-3.5
-                            animate-spin
-                            rounded-full
-                            border-2
-                            border-white/30
-                            border-t-white
-                          " />
+                          <span
+                            className="
+                              h-3.5 w-3.5
+                              animate-spin
+                              rounded-full
+                              border-2
+                              border-white/30
+                              border-t-white
+                            "
+                          />
 
                           Updating...
                         </>
@@ -1080,7 +1136,6 @@ export default function AdminProfile() {
                 </div>
               )}
             </section>
-
           </div>
         </div>
       </div>
